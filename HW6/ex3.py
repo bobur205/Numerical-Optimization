@@ -1,11 +1,9 @@
 import numpy as np
 import cvxpy as cp
 
-# ==========================================
-# --- 1. INPUT YOUR BLACKBOARD DATA HERE ---
-# ==========================================
 
-# Replace these example arrays with the actual data for Polygon C (A1*x <= b1)
+
+# If you want to change data, just replace below massives with yours
 A1 = np.array( [
       [5.8479532e-01,  -1.9354839e+00],
       [2.3859649e+00,   1.1428571e+00],
@@ -41,15 +39,14 @@ b2 = np.array( [
       ] )
 
 
-# ==========================================
-# --- 2. OPTIMIZATION PROBLEM SETUP --------
-# ==========================================
+#  OPTIMIZATION PROBLEM SETUP 
 
-# Define variables: 2D coordinates for point x (in C) and point y (in D)
+
+# I define  variables: 2D coordinates for point x (in C) and point y (in D)
 x = cp.Variable(2)
 y = cp.Variable(2)
 
-# Define the objective: Minimize the squared Euclidean distance ||x - y||^2
+# Define the objective:
 objective = cp.Minimize(cp.sum_squares(x - y))
 
 # Define the kinematic constraints for the polygons
@@ -58,13 +55,12 @@ constraints = [
     A2 @ y <= b2
 ]
 
-# Formulate and solve the Quadratic Program
+# solving by cvxpy
 prob = cp.Problem(objective, constraints)
 prob.solve()
 
-# ==========================================
-# --- 3. RESULTS AND MULTIPLIERS -----------
-# ==========================================
+
+#   printing RESULTS AND MULTIPLIERS 
 
 print("=== OPTIMIZATION RESULTS ===")
 print(f"Status: {prob.status}")
@@ -76,7 +72,7 @@ print(f"Closest point in C (x*): [{x.value[0]:.4f}, {x.value[1]:.4f}]")
 print(f"Closest point in D (y*): [{y.value[0]:.4f}, {y.value[1]:.4f}]")
 
 print("\n=== LAGRANGE MULTIPLIERS (DUAL VARIABLES) ===")
-# A multiplier is > 0 if the corresponding constraint (polygon edge) is active
+
 print("Multipliers for Polygon C (lambda):")
 print(np.round(constraints[0].dual_value, 4))
 
